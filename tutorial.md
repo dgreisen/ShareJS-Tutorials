@@ -73,7 +73,7 @@ server. In `./src/index.coffee`:
 	# import the Connect middleware (http://www.senchalabs.org/connect/)
 	connect = require('connect')
 
-	# create a Connect
+	# create a Connect server
 	server = connect.createServer()
 	# attach a static file server that serves files from our static directory
 	server.use(connect['static'](__dirname + "/../static"))
@@ -95,8 +95,10 @@ Next, we create a simple html file for our server to serve. In
 		</body>
 	</html>
 
-Now we can start our server and visit the page we just created. From the 
-command line start our compiled server: `node ./lib/index.js`, then in our
+Now we can start our server and visit the page we just created. If you ran the
+command `cake watch` then our server was automatically complide. If you didn't,
+then you need to run `cake build` to build to javascript files in `./lib`. From
+the command line start our compiled server: `node ./lib/index.js`, then in our
 browser go to `127.0.0.1:5000` to see our very basic page.
 
 Add the ShareJS Server
@@ -104,33 +106,31 @@ Add the ShareJS Server
 Incredibly simple, just add the ShareJS dependency and bind the ShareJS server to
 our connect server
 
-	# import the Connect middleware (http://www.senchalabs.org/connect/)
-	connect = require('connect')
+<pre>
+# import the Connect middleware (http://www.senchalabs.org/connect/)
+connect = require('connect')
 
-	# << NEW >>
-	# import the ShareJS server
-	ShareJS = require('share').server	
+<b># import the ShareJS server
+ShareJS = require('share').server	
 
-	# create a settings object for our ShareJS server
-	ShareJSOpts =
-		browserChannel:		# set pluggable transport to BrowserChannel
-			cors: "*"
-		db: "none"			# no persistence
-	# << /NEW >>
+# create a settings object for our ShareJS server
+ShareJSOpts =
+	browserChannel:		# set pluggable transport to BrowserChannel
+		cors: "*"
+	db: "none"			# no persistence</b>
 
-	# create a Connect server
-	server = connect.createServer()
-	# attach a static file server that serves files from our static directory
-	server.use(connect['static'](__dirname + "/../static"))
+# create a Connect server
+server = connect.createServer()
+# attach a static file server that serves files from our static directory
+server.use(connect['static'](__dirname + "/../static"))
 
-	# << NEW >>
-	# create a ShareJS server and bind to Connect server
-	ShareJS.attach(server, ShareJSOpts);
-	# << /NEW >>
+<b># create a ShareJS server and bind to Connect server
+ShareJS.attach(server, ShareJSOpts);</b>
 
-	# set our server port and start the server
-	port = 5000
-	server.listen(port, () -> console.log("Listening on " + port))
+# set our server port and start the server
+port = 5000
+server.listen(port, () -> console.log("Listening on " + port))
+</pre>
 
 ShareJS has a pluggable tranport infrastructure. That means that it can communicate
 with the client over several different protocols. It also has pluggable persistence.
@@ -201,5 +201,5 @@ because the `textarea.js` file added the `attach_textarea` function to the doc. 
 adds dom event listeners and document listeners needed to keep everything in sync. I encourage
 you to read the source code of this function to get a good idea of how to the internals work.
 
-We're done! start the node server, and navigate to your index.html in two different web browsers.
+We're done! Start the node server, and navigate to your index.html in two different web browsers.
 When you type in one, you will see the changes in both. 
