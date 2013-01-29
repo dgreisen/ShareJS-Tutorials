@@ -9,12 +9,12 @@ sharejsOpts =
 		cors: "*"
 	db: "none"			# no persistence
 
-# create a Connect server
-server = connect.createServer()
+# create a Connect app
+app = connect()
 # attach a static file server that serves files from our static directory
-server.use(connect['static'](__dirname + "/../static"))
-# create a sharejs server and bind to Connect server
-sharejs.attach(server, sharejsOpts);
+app.use(connect['static'](__dirname + "/../static"))
+# pass the app to ShareJS so it can create both the Connect and ShareJS servers
+server = sharejs.attach(app, sharejsOpts);
 
 # set our server port and start the server
 port = 5000

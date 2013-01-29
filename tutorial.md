@@ -72,11 +72,18 @@ server. In `./src/index.coffee`:
 
 	# import the Connect middleware (http://www.senchalabs.org/connect/)
 	connect = require('connect')
+	http = require('http')
 
-	# create a Connect server
-	server = connect.createServer()
+	# we are using the new connect 2.7, so we must create an app then create
+	# a server from the app:
+
+	# create a Connect application
+	app = connect()
 	# attach a static file server that serves files from our static directory
-	server.use(connect['static'](__dirname + "/../static"))
+	app.use(connect['static'](__dirname + "/../static"))
+
+	# now we create the server:
+	server = http.createServer(app)
 
 	# set our server port and start the server
 	port = 5000
@@ -103,8 +110,8 @@ browser go to `127.0.0.1:5000` to see our very basic page.
 
 Add the ShareJS Server
 ----------------------
-Incredibly simple, just add the ShareJS dependency and bind the ShareJS server to
-our connect server
+Incredibly simple, just add the ShareJS dependency and pass our app into shareJS.
+ShareJS will handle creating the server for us.
 
 <pre>
 # import the Connect middleware (http://www.senchalabs.org/connect/)
@@ -120,12 +127,12 @@ ShareJSOpts =
 	db: "none"			# no persistence</b>
 
 # create a Connect server
-server = connect.createServer()
+app = connect()
 # attach a static file server that serves files from our static directory
-server.use(connect['static'](__dirname + "/../static"))
+app.use(connect['static'](__dirname + "/../static"))
 
-<b># create a ShareJS server and bind to Connect server
-ShareJS.attach(server, ShareJSOpts);</b>
+<b># pass the app to ShareJS so it can create both the Connect and ShareJS servers
+server = ShareJS.attach(app, ShareJSOpts);</b>
 
 # set our server port and start the server
 port = 5000
